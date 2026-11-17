@@ -31,7 +31,7 @@
     return exercises;
   }
   // déduit le focus depuis le pinyin : initiales et tons (marques unicode)
-  const TONE_MARS = { ā:1,á:2,ǎ:3,à:4, ē:1,é:2,ě:3,è:4, ī:1,í:2,ǐ:3,ì:4,
+  const TONE_MARKS = { ā:1,á:2,ǎ:3,à:4, ē:1,é:2,ě:3,è:4, ī:1,í:2,ǐ:3,ì:4,
     ō:1,ó:2,ǒ:3,ò:4, ū:1,ú:2,ǔ:3,ù:4, ǖ:1,ǘ:2,ǚ:3,ǜ:4 };
   const INITIALS = ["zh","ch","sh","b","p","m","f","d","t","n","l","g","k","h","j","q","x","z","c","s","r","y","w"];
   function guessFocus(pinyin) {
@@ -81,7 +81,7 @@
     const exs = parseCustom($("custom-input").value);
     if (!exs.length) { alert("Format attendu : 汉字 ; pīnyīn (une phrase par ligne)."); return; }
     state.customSets.push({
-      id: "custom-" + Date.now() title: "Mes phrases " + (state.customSets.length + 1),
+      id: "custom-" + Date.now(), title: "Mes phrases " + (state.customSets.length + 1),
       tip: "Vos propres phrases.",
       mode: "consonants",
       exercises: exs,
@@ -108,7 +108,7 @@
   }
   function markedPinyin(ex) {
     const focusPinyins = ex.focus.map(f => f.pinyin.replace(/\d/g, ""));
-    return ex.pinyin.split(/(\s+|,|\.|!\\?)o).map(tok => {
+    return ex.pinyin.split(/(\s+|[,.!?])/).map(tok => {
       if (!tok || !/[a-zāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ]/i.test(tok)) return tok;
       const bare = tok.replace(/\d/g, "").toLowerCase();
       return focusPinyins.some(f => f === bare || f.includes(bare) || bare.includes(f))
@@ -200,7 +200,7 @@
     if (state.heard) {
       $("heard").innerHTML = `Le moteur de reconnaissance a entendu : <b>${state.heard}</b>` +
         (state.heard.replace(/\s/g, "").includes(ex.hanzi.replace(/[，。！？,.!?]/g, "")) ? " ✅ identique à la cible." :
-        " — comparez avec la phrase cible pour repérer les syllables confordues.");
+        " — comparez avec la phrase cible pour repérer les syllables confondues.");
     } else {
       $("heard").textContent = "";
     }
@@ -262,11 +262,11 @@
   function checkBrowser() {
     const probs = [];
     if (!navigator.mediaDevices || !window.MediaRecorder) probs.push("micro");
-    if (!(window.SpeechRecognition || window.webkitSpeechRecognition)) probs.push("reconnaissance vocale (facultatifve)");
+    if (!(window.SpeechRecognition || window.webkitSpeechRecognition)) probs.push("reconnaissance vocale (facultative)");
     if (probs.length) {
       const w = $("browser-warn");
       w.classList.remove("hidden");
-      w.textContent = "  Non disponible dans ce navigateur : " + probs.join(", ") + ". Utilisez Chrome ou Edge pour l'expérience compléte.";
+      w.textContent = "  Non disponible dans ce navigateur : " + probs.join(", ") + ". Utilisez Chrome ou Edge pour l'expérience complète.";
     }
     if (window.speechSynthesis) speechSynthesis.getVoices();
   }

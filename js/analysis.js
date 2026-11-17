@@ -249,7 +249,7 @@ const Analysis = (() => {
           msg: "Syllabe non détectée — réessayez plus près du micro." }); continue; }
         const c = contourOfSeg(pts, seg);
         if (!c) { result.items.push({ focus: tones[i].pinyin, verdict: "warn",
-          msg: "Pas assez de voiy détectée sur cette syllabe." }); continue; }
+          msg: "Pas assez de voix détectée sur cette syllabe." }); continue; }
         const score = compareTone(c, tones[i].tone);
         result.items.push({
           focus: tones[i].pinyin, tone: tones[i].tone, contour: c, verdict: score >= 75 ? "ok" : score >= 45 ? "warn" : "bad",

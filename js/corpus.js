@@ -11,15 +11,15 @@ const CONSONANT_SETS = [
       { hanzi: "四是四，十是十。", pinyin: "sì shì sì, shí shì shí.",
         focus: [{pinyin:"sì",initial:"s",tone:4},{pinyin:"shì",initial:"sh",tone:4},{pinyin:"shí",initial:"sh",tone:2}] },
       { hanzi: "十四是十四，四十是四十。", pinyin: "shísì shì shísì, sìshí shì sìshí.",
-        focus: [{pinyin:"shísì",initial:"sh",tone:2},{pinyin:"sëshí",initial:"s",tone:4}] },
+        focus: [{pinyin:"shísì",initial:"sh",tone:2},{pinyin:"sìshí",initial:"s",tone:4}] },
       { hanzi: "老师在学校。", pinyin: "lǎoshī zài xuéxiào.",
         focus: [{pinyin:"shī",initial:"sh",tone:1},{pinyin:"zài",initial:"z",tone:4}] },
       { hanzi: "他四十岁。", pinyin: "Tā sìshí suì.",
-        focus: [{pinyin:"sëshí",initial:"s",tone:4}] },
+        focus: [{pinyin:"sìshí",initial:"s",tone:4}] },
     ],
   },
   {
-    id: "x-sh", title: "X / SH'b 想 xiǎng vs 上 shàng",
+    id: "x-sh", title: "X / SH — 想 xiǎng vs 上 shàng",
     tip: "X : langue large contre les incisives inférieures, sourire léger. SH : pointe de langue relevée en arrière, lèvres arrondies.",
     exercises: [
       { hanzi: "我想学习。", pinyin: "Wǒ xiǎng xuéxí.",
@@ -136,7 +136,7 @@ const TONE_SETS = [
     tip: "1 haut et plat · 2 montant · 3 descend puis remonte · 4 tombe fort.",
     exercises: [
       { hanzi: "妈妈骑马，马慢。", pinyin: "Māma qī mǎ, mǎ màn.",
-        focus: [{pinyin:"mā",tone:1},{pinyin:"q«",tone:1},{pinyin:"mǎ",tone:3},{pinyin:"màn",tone:4}] },
+        focus: [{pinyin:"mā",tone:1},{pinyin:"qī",tone:1},{pinyin:"mǎ",tone:3},{pinyin:"màn",tone:4}] },
       { hanzi: "妈麻马骂。", pinyin: "Mā má mǎ mà.",
         focus: [{pinyin:"mā",tone:1},{pinyin:"má",tone:2},{pinyin:"mǎ",tone:3},{pinyin:"mà",tone:4}] },
       { hanzi: "汤糖躺烫。", pinyin: "Tāng táng tǎng tàng.",
