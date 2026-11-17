@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pinyin Coach 拼音教练 — Entraînement de prononciation</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header>
+  <h1>拼音教练 <span>Pinyin Coach</span></h1>
+  <nav id="breadcrumb"><button class="link" id="btn-home">← Retour à l'accueil</button></nav>
+</header>
+
+<!-- ================= ACCUEIL ================= -->
+<main id="screen-home" class="screen">
+  <p class="intro">Choisissez votre entraînement. Le micro enregistre votre voix, l'analyse se fait
+  <strong>entièrement dans votre navigateur</strong> : aucun audio n'est envoyé sur un serveur.</p>
+
+  <section class="mode-cards">
+    <article class="mode-card" data-mode="consonants">
+      <h2>声母 Consonnes</h2>
+      <p>S, SH, X, J, ZH, Q, CH, C, Z, N, L, R… Les paires qui vous font trébucher.</p>
+      <ul class="set-list" id="list-consonants"></ul>
+    </article>
+    <article class="mode-card" data-mode="tones">
+      <h2>声调 Tons</h2>
+      <p>Les quatre tons : haut, montant, descendant-remontant, tombant.</p>
+      <ul class="set-list" id="list-tones"></ul>
+    </article>
+  </section>
+
+  <section class="custom">
+    <h2>✎ Mes propres textes</h2>
+    <p>Une phrase par ligne au format : <code>汉字 ; pīnyīn</code><br>
+    <small>Exemple : <code>我想学习 ; wǒ xiǎng xuéxí</code></small></p>
+    <textarea id="custom-input" rows="5" placeholder="先生想学习 ; xiānsheng xiǎng xuCɸí&#10;她去学校 ; tā qù xuéxiào"></textarea>
+    <button id="btn-custom-save" class="primary">Enregistrer mes phrases</button>
+    <ul class="set-list" id="list-custom"></ul>
+  </section>
+</main>
+
+<!-- ================= EXERCICE ================= -->
+<main id="screen-exercise" class="screen hidden">
+  <div class="exercise-head">
+    <span id="ex-badge" class="badge"></span>
+    <span id="ex-tip" class="tip"></span>
+  </div>
+
+  <div class="sentence">
+    <div id="ex-hanzi" class="hanzi"></div>
+    <div id="ex-pinyin" class="pinyin"></div>
+  </div>
+
+  <div class="controls">
+    <button id="btn-model" class="btn">🔊 Écouter le modèle</button>
+    <button id="btn-record" class="btn record">⏺ Enregistrer</button>
+    <button id="btn-playback" class="btn" disabled>▶ Réécouter</button>
+    <button id="btn-next" class="btn">Phrase suivante →</button>
+  </div>
+
+  <div id="rec-status" class="rec-status hidden">● Enregistrement… parlez maintenant, puis re-cliquez pour arrêter.</div>
+
+  <section id="results" class="results hidden">
+    <h3>Analyse</h3>
+    <div id="verdict"></div>
+    <canvas id="chart" width="640" height="220"></canvas>
+    <div id="heard"></div>
+    <div id="score"></div>
+  </section>
+
+  <p id="browser-warn" class="warn hidden"></p>
+</main>
+
+<footer>
+  <small>Analyse 100 % locale (Web Audio). Meilleur rendu dans Chrome / Edge.
+  <a href="https://github.com/AlturForge/pinyin-coach">Code source</a></small>
+</footer>
+
+<script src="js/corpus.js"></script>
+<script src="js/analysis.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

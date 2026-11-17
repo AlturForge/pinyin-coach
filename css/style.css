@@ -1,0 +1,70 @@
+:root {
+  --ink: #1c2733;
+  --accent: #c0392b;
+  --ok: #1e8449;
+  --warn: #b9770e;
+  --bg: #faf7f2;
+  --card: #ffffff;
+  --line: #e3ddd2;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--ink);
+}
+header { display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; border-bottom: 1px solid var(--line); }
+header h1 { font-size: 1.4rem; margin: 0; }
+header h1 span { color: var(--accent); font-size: 1rem; }
+.link { background: none; border: none; color: var(--accent); cursor: pointer; font-size: .95rem; }
+main { max-width: 780px; margin: 0 auto; padding: 20px 16px 60px; }
+.hidden { display: none !important; }
+
+.intro { color: #5a5347; }
+.mode-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+@media (max-width: 640px) { .mode-cards { grid-template-columns: 1fr; } }
+.mode-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; }
+.mode-card h2 { margin: 0 0 6px; font-size: 1.15rem; }
+.mode-card p { color: #6b6357; font-size: .9rem; margin: 0 0 12px; }
+
+.set-list { list-style: none; padding: 0; margin: 0; }
+.set-list li { margin: 6px 0; }
+.set-list button {
+  width: 100%; text-align: left; padding: 10px 12px; border: 1px solid var(--line);
+  border-radius: 8px; background: #fdfbf7; cursor: pointer; font-size: .95rem;
+}
+.set-list button:hover { border-color: var(--accent); }
+.set-list small { color: #8a8172; display: block; }
+
+.custom { margin-top: 26px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; }
+.custom textarea { width: 100%; padding: 10px; border: 1px solid var(--line); border-radius: 8px; font-size: 1rem; }
+.custom .primary { margin-top: 10px; }
+
+.exercise-head { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+.badge { background: var(--accent); color: #fff; border-radius: 6px; padding: 4px 10px; font-size: .85rem; }
+.tip { color: #7a7263; font-size: .9rem; }
+
+.sentence { text-align: center; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 28px 16px; margin: 10px 0 18px; }
+.hanzi { font-size: clamp(2rem, 6vw, 3rem); line-height: 1.35; }
+.pinyin { font-size: clamp(1.1rem, 3.5vw, 1.5rem); color: #63594b; margin-top: 10px; }
+.pinyin mark { background: #ffe9e6; border-bottom: 2px solid var(--accent); padding: 0 2px; border-radius: 3px; }
+
+.controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.btn { padding: 10px 16px; border-radius: 10px; border: 1px solid var(--line); background: #fff; cursor: pointer; font-size: .95rem; }
+.btn:hover:not(:disabled) { border-color: var(--ink); }
+.btn:disabled { opacity: .45; cursor: default; }
+.btn.record { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn.record.on { background: #7b241c; }
+.primary { background: var(--ink); color: #fff; border: none; padding: 10px 16px; border-radius: 10px; cursor: pointer; }
+
+.rec-status { text-align: center; color: var(--accent); font-weight: 600; margin-top: 12px; }
+
+.results { margin-top: 24px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; }
+.results h3 { margin: 0 0 12px; }
+.verdict-item { padding: 10px 12px; border-radius: 8px; margin: 8px 0; font-size: .95rem; }
+.verdict-ok { background: #eaf6ef; border-left: 4px solid var(--ok); }
+.verdict-warn { background: #fdf3e2; border-left: 4px solid var(--warn); }
+.verdict-bad { background: #fdecea; border-left: 4px solid var(--accent); }
+canvas { width: 100%; max-width: 640px; display: block; margin: 14px auto; background: #fdfbf7; border: 1px solid var(--line); border-radius: 8px; }
+#heard { color: #6b6357; font-size: .92rem; margin-top: 8px; }
+#score { font-size: 1.2rem; font-weight: 700; margin-top: 10px; }
+.warn { background: #fdf3e2; border: 1px solid #ecd9ad; border-radius: 8px; padding: 10px 14px; font-size: .9rem; }
+footer { text-align: center; padding: 20px; color: #9a917f; border-top: 1px solid var(--line); }
