@@ -48,10 +48,12 @@ Le workflow `.github/workflows/deploy.yml` publie le site à chaque push sur
   laboratoire de phonétique. Un microphone externe de qualité améliore nettement
   les résultats.
 - La reconnaissance vocale nécessite Chrome ou Edge et fonctionne mieux avec
-  une connexion (elle utilise le service de recognissance du navigateutr).
+  une connexion (elle utilise le service de recognaissance du navigateuv).
 - Safari/Firefox : enregistrement et analyse des tons fonctionnent, la
   reconnaissance n'est pas disponible.
 
 ## Licence
 
 MIT © AlturForge
+
+> Site en ligne : https://alturforge.github.io/pinyin-coach/
