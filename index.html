@@ -19,6 +19,12 @@
   <small>Exception : le mode <b>Dictée &amp; correction IA</b> envoie votre enregistrement à l'API Mistral (avec votre propre clé) pour une transcription et une correction.</small></p>
 
   <section class="mode-cards">
+    <article class="mode-card mode-card-dictee mode-card-wide">
+      <h2>🤖 Dictée &amp; correction IA</h2>
+      <p>Dites une phrase en chinois au micro : <b>Voxtral transcrit ce que l'IA entend</b>, puis Mistral vous explique en français comment corriger votre prononciation (consonnes, tons, conseils articulatoires).</p>
+      <button class="btn dictee-open" id="btn-dictee-open">🎤 Dicter une phrase et me faire corriger →</button>
+      <p class="dictee-hint"><small>Phrase cible en <b>汉字 ou en pinyin</b>, collée ou tapée. Nécessite une clé API Mistral (⚙️ réglages sur l'écran suivant).</small></p>
+    </article>
     <article class="mode-card" data-mode="consonants">
       <h2>声母 Consonnes</h2>
       <p>S, SH, X, J, ZH, Q, CH, C, Z, N, L, R… Les paires qui vous font trébucher.</p>
@@ -28,11 +34,6 @@
       <h2>声调 Tons</h2>
       <p>Les quatre tons : haut, montant, descendant-remontant, tombant.</p>
       <ul class="set-list" id="list-tones"></ul>
-    </article>
-    <article class="mode-card mode-card-dictee">
-      <h2>🤖 Dictée &amp; correction IA</h2>
-      <p>Tapez ou collez une phrase cible (en <b>caractères chinois ou en pinyin</b>), dictez-la au micro : Voxtral transcrit ce que l'IA entend, puis Mistral vous explique en français comment corriger votre prononciation.</p>
-      <button class="btn dictee-open" id="btn-dictee-open">Ouvrir la dictée IA →</button>
     </article>
   </section>
 

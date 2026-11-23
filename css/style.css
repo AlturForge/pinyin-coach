@@ -70,9 +70,11 @@ canvas { width: 100%; max-width: 640px; display: block; margin: 14px auto; backg
 footer { text-align: center; padding: 20px; color: #9a917f; border-top: 1px solid var(--line); }
 
 /* ---------- Dictée & correction IA ---------- */
-.mode-cards { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.mode-card-wide { grid-column: 1 / -1; border-color: #e8c5c0; background: #fffdfc; }
 .mode-card-dictee h2 { color: var(--accent); }
-.dictee-open { margin-top: 4px; }
+.dictee-open { background: var(--accent); color: #fff; border-color: var(--accent); font-size: 1.05rem; padding: 14px 18px; width: 100%; }
+.dictee-open:hover { background: #a93226; }
+.dictee-hint { margin-top: 10px; }
 
 .dictee-target { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 20px; margin: 14px 0; }
 .dictee-target label { display: block; font-size: .92rem; color: #5a5347; margin-bottom: 8px; }
