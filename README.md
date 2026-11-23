@@ -2,7 +2,7 @@
 
 Entraînement interactif de la prononciation du chinois mandarin, axé sur les
 **consonnes du pinyin** (s/sh, x/sh, j/zh, q/ch, z/zh, c/ch, n/l, r/l, f/h…) et
-sur les **quatre tons**, avec un mode **Dictée & correction IA** (API Mistral).
+sur les **quatre tons**, avec un mode **Parler & se faire corriger (IA)**.
 
 ## Comment ça marche
 
@@ -23,23 +23,25 @@ sur les **quatre tons**, avec un mode **Dictée & correction IA** (API Mistral).
 
 Aucun audio ne quitte votre appareil : pas de serveur, pas de clé API, pas de coût.
 
-## 🤖 Dictée & correction IA
+## 🤖 Parler & se faire corriger (IA)
 
-Le mode « Dictée & correction IA » fait ce que l'analyse locale ne peut pas faire :
+Deux façons de procéder, au choix :
 
-1. Entrez ou collez une **phrase cible** (en caractères chinois ou en pinyin).
-2. Cliquez sur **Enregistrer** et lisez la phrase.
-3. L'enregistrement est converti en WAV 16 kHz dans le navigateur, puis envoyé à
-   l'API **Voxtral** (`voxtral-mini-transcribe-3`) qui transcrit ce que l'IA entend.
-4. La transcription et la phrase cible sont envoyées au modèle de chat
-   (`mistral-small-latest` par défaut), qui diagnostique en français vos erreurs
-   de prononciation (consonnes confondues, tons, syllabes déformées) et donne
-   des conseils articulatoires concrets.
+- **Parler librement** : rien à écrire. Appuyez, parlez en chinois, arrêtez.
+- **Viser une phrase** : écrivez la phrase visée (en caractères chinois **ou**
+  en pinyin) si vous voulez une comparaison précise.
 
-Ce mode nécessite **votre propre clé API Mistral** (console.mistral.ai). La clé
-est stockée uniquement dans le localStorage de votre navigateur ; les appels
-vont directement du navigateur à api.mistral.ai. Contrairement au reste de
-l'application, l'audio est ici envoyé à l'API pour transcription.
+Dans les deux cas, l'enregistrement est converti en WAV 16 kHz dans le
+navigateur, puis envoyé **directement à un modèle de chat audio Mistral**
+(`voxtral-small-latest`, partie `input_audio`) : le modèle écoute votre voix,
+transcrit ce qu'il entend (« Entendu : … ») et vous explique en français vos
+erreurs de prononciation probables (consonnes confondues s/sh, j/zh, q/ch, n/l,
+r/l, f/h, tons inexacts, syllabes déformées) avec des conseils articulatoires.
+
+Ce mode nécessite **votre propre clé API Mistral** (console.mistral.ai → API
+Keys → New key). La clé est stockée uniquement dans le localStorage de votre
+navigateur ; les appels vont directement du navigateur à api.mistral.ai.
+Contrairement au reste de l'application, l'audio est ici envoyé à l'API.
 
 ## Textes personnalisés
 
@@ -69,9 +71,9 @@ Le workflow `.github/workflows/deploy.yml` publie le site à chaque push sur
   une connexion (elle utilise le service de reconnaissance du navigateur).
 - Safari/Firefox : enregistrement et analyse des tons fonctionnent, la
   reconnaissance n'est pas disponible.
-- Dictée IA : le diagnostic repose sur l'écart entre la cible et la
-  transcription ; une transcription correcte ne garantit pas une prononciation
-  parfaite (les erreurs fines de ton ne sont pas toujours audibles pour le STT).
+- Correction IA : le diagnostic repose sur l'écoute du modèle Voxtral ; une
+  transcription correcte ne garantit pas une prononciation parfaite (les
+  erreurs fines de ton ne sont pas toujours audibles).
 
 ## Licence
 

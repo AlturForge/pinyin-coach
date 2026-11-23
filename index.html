@@ -16,14 +16,14 @@
 <main id="screen-home" class="screen">
   <p class="intro">Choisissez votre entraînement. Le micro enregistre votre voix, l'analyse des exercices se fait
   <strong>entièrement dans votre navigateur</strong> : aucun audio n'est envoyé sur un serveur.<br>
-  <small>Exception : le mode <b>Dictée &amp; correction IA</b> envoie votre enregistrement à l'API Mistral (avec votre propre clé) pour une transcription et une correction.</small></p>
+  <small>Exception : le mode <b>Parler &amp; se faire corriger</b> envoie votre enregistrement à l'API Mistral (avec votre propre clé) pour une correction par un modèle qui écoute votre voix.</small></p>
 
   <section class="mode-cards">
     <article class="mode-card mode-card-dictee mode-card-wide">
-      <h2>🤖 Dictée &amp; correction IA</h2>
-      <p>Dites une phrase en chinois au micro : <b>Voxtral transcrit ce que l'IA entend</b>, puis Mistral vous explique en français comment corriger votre prononciation (consonnes, tons, conseils articulatoires).</p>
-      <button class="btn dictee-open" id="btn-dictee-open">🎤 Dicter une phrase et me faire corriger →</button>
-      <p class="dictee-hint"><small>Vous écrivez la phrase à prononcer comme vous voulez : <b>en 汉字 ou en pinyin</b> (aucun choix préalable, les deux fonctionnent). Nécessite une clé API Mistral : le mode vous guide pas à pas.</small></p>
+      <h2>🤖 Parler &amp; se faire corriger (IA)</h2>
+      <p><b>Parlez simplement en chinois</b> : le modèle Mistral écoute votre voix, transcrit ce qu'il entend et vous explique en français comment améliorer votre prononciation. Rien à écrire.</p>
+      <button class="btn dictee-open" id="btn-dictee-open">🎤 Parler et me faire corriger →</button>
+      <p class="dictee-hint"><small>Option « phrase à viser » disponible pour comparer avec une phrase précise. Nécessite une clé API Mistral : le mode vous guide pas à pas.</small></p>
     </article>
     <article class="mode-card" data-mode="consonants">
       <h2>声母 Consonnes</h2>
@@ -79,10 +79,10 @@
   <p id="browser-warn" class="warn hidden"></p>
 </main>
 
-<!-- ================= DICTÉE IA ================= -->
+<!-- ================= PARLER & CORRECTION IA ================= -->
 <main id="screen-dictee" class="screen hidden">
   <div class="exercise-head">
-    <span class="badge">🤖 Dictée &amp; correction IA</span>
+    <span class="badge">🤖 Parler &amp; se faire corriger</span>
   </div>
 
   <div id="dictee-key-banner" class="warn key-banner hidden">
@@ -96,31 +96,42 @@
     <small>Selon votre compte, la console peut demander l'ajout d'un moyen de paiement pour activer l'accès API. La clé reste ensuite stockée uniquement dans ce navigateur.</small>
   </div>
 
-  <section class="dictee-target">
-    <label for="dictee-phrase"><b>1. Écrivez la phrase à prononcer</b> — comme vous voulez : 汉字 <i>ou</i> pinyin, à votre convenance.</label>
+  <!-- Choix du mode -->
+  <div class="seg-wrap">
+    <span class="seg-label">Comment voulez-vous parler ?</span>
+    <div class="seg">
+      <button id="seg-talk" class="seg-btn seg-on">🎤 Parler librement</button>
+      <button id="seg-target" class="seg-btn">🎯 Viser une phrase</button>
+    </div>
+  </div>
+
+  <!-- Zone « phrase à viser » (mode 2 seulement) -->
+  <section id="dictee-target-zone" class="dictee-target hidden">
+    <label for="dictee-phrase">Écrivez la phrase que vous voulez prononcer — comme vous voulez : 汉字 <i>ou</i> pinyin.</label>
     <input id="dictee-phrase" type="text" autocomplete="off"
            placeholder="ex. 我想学习 — ou bien wǒ xiǎng xuéxí (l'un ou l'autre)">
     <div class="dictee-examples">
-      <small>Exemples à essayer :</small>
+      <small>Suggestions :</small>
       <button class="chip" data-ex="四是四，十是十，十四是十四，四十是四十">四是四，十是十…</button>
       <button class="chip" data-ex="wǒ xiǎng xuéxí">wǒ xiǎng xuéxí</button>
       <button class="chip" data-ex="你好，我想练习发音">你好，我想练习发音</button>
     </div>
+    <button id="btn-dictee-model" class="btn">🔊 Écouter la phrase modèle</button>
   </section>
 
-  <div class="controls">
-    <button id="btn-dictee-model" class="btn">🔊 Écouter le modèle</button>
-    <button id="btn-dictee-record" class="btn record">⏺ 2. Enregistrer et parler</button>
-    <button id="btn-dictee-playback" class="btn" disabled>▶ Réécouter</button>
-  </div>
-  <p class="step-hint"><small>Après l'arrêt de l'enregistrement, la transcription puis la correction s'affichent automatiquement.</small></p>
+  <p id="talk-hint" class="talk-hint">Appuyez, <b>parlez en chinois</b> (une phrase ou quelques phrases), puis réappuyez pour arrêter. Rien à écrire, rien à choisir.</p>
 
-  <div id="dictee-status" class="rec-status hidden"></div>
+  <!-- Enregistrement commun aux deux modes -->
+  <section class="talk-box">
+    <button id="btn-dictee-record" class="btn record talk-btn">🎤 Parler</button>
+    <button id="btn-dictee-playback" class="btn" disabled>▶ Réécouter</button>
+    <div id="dictee-status" class="rec-status hidden"></div>
+  </section>
 
   <section id="dictee-results" class="results hidden">
-    <h3>3. Correction</h3>
+    <h3>Correction</h3>
     <div class="d-transcript-wrap">
-      <div class="d-transcript-label">Ce que l'IA a entendu (transcription Voxtral) :</div>
+      <div class="d-transcript-label">Ce que l'IA a entendu :</div>
       <div id="dictee-transcript" class="d-transcript"></div>
     </div>
     <div id="dictee-feedback" class="d-feedback"></div>
@@ -128,9 +139,9 @@
 
   <details class="d-settings" id="dictee-settings" open>
     <summary>⚙️ Clé API Mistral (obligatoire pour la correction)</summary>
-    <p>La clé reste uniquement dans ce navigateur (localStorage) ; les appels vont directement de votre navigateur à api.mistral.ai. L'enregistrement est envoyé à l'API pour la transcription.</p>
+    <p>La clé reste uniquement dans ce navigateur (localStorage) ; les appels vont directement de votre navigateur à api.mistral.ai. Votre enregistrement est envoyé au modèle pour qu'il l'écoute.</p>
     <label>Clé API <input id="dictee-apikey" type="password" autocomplete="off" placeholder="Collez ici la clé de console.mistral.ai"></label>
-    <label>Modèle de chat <input id="dictee-modelname" type="text" value="mistral-small-latest"></label>
+    <label>Modèle (audio) <input id="dictee-modelname" type="text" value="voxtral-small-latest"></label>
     <div><button id="dictee-save-settings" class="btn">Enregistrer</button>
     <span id="dictee-settings-msg" class="d-settings-msg"></span></div>
   </details>

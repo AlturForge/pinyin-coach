@@ -1,30 +1,31 @@
 // ============================================================
-// Pinyin Coach — Dictée & correction IA
-// Enregistre la voix, la convertit en WAV 16 kHz mono,
-// la fait transcrire par Voxtral (API Mistral), puis demande
-// au modèle de chat une correction de prononciation en français.
+// Pinyin Coach — Parler & se faire corriger (IA)
+// Deux modes : parole libre (rien à écrire) ou phrase à viser.
+// L'enregistrement est converti en WAV 16 kHz mono puis envoyé
+// directement à un modèle de chat audio Mistral (voxtral),
+// qui transcrit et corrige la prononciation en français.
 // La clé API reste dans le localStorage du navigateur.
 // ============================================================
 
 (() => {
   const $ = id => document.getElementById(id);
   const LS_KEY = "pinyin-coach-mistral-key";
-  const LS_MODEL = "pinyin-coach-mistral-model";
-  const TRANSCRIBE_MODEL = "voxtral-mini-transcribe-3";
+  const LS_MODEL = "pinyin-coach-audio-model";
+  const DEFAULT_MODEL = "voxtral-small-latest";
 
   const state = {
     mediaRecorder: null, chunks: [], audioBlob: null, playbackUrl: null,
-    recording: false, busy: false,
+    recording: false, busy: false, mode: "talk",
   };
 
   // ---------- réglages ----------
   function loadSettings() {
     $("dictee-apikey").value = localStorage.getItem(LS_KEY) || "";
-    $("dictee-modelname").value = localStorage.getItem(LS_MODEL) || "mistral-small-latest";
+    $("dictee-modelname").value = localStorage.getItem(LS_MODEL) || DEFAULT_MODEL;
   }
   $("dictee-save-settings").onclick = () => {
     const key = $("dictee-apikey").value.trim();
-    const model = $("dictee-modelname").value.trim() || "mistral-small-latest";
+    const model = $("dictee-modelname").value.trim() || DEFAULT_MODEL;
     if (key) localStorage.setItem(LS_KEY, key); else localStorage.removeItem(LS_KEY);
     localStorage.setItem(LS_MODEL, model);
     $("dictee-settings-msg").textContent = "✓ Enregistré" + (key ? "" : " (sans clé)");
@@ -39,16 +40,30 @@
     $("dictee-settings").open = !hasKey;
   }
 
+  // ---------- bascule des deux modes ----------
+  function setMode(mode) {
+    state.mode = mode;
+    const talk = mode === "talk";
+    $("seg-talk").classList.toggle("seg-on", talk);
+    $("seg-target").classList.toggle("seg-on", !talk);
+    $("dictee-target-zone").classList.toggle("hidden", talk);
+    $("talk-hint").classList.toggle("hidden", !talk);
+    hideWarn();
+  }
+  $("seg-talk").onclick = () => setMode("talk");
+  $("seg-target").onclick = () => setMode("target");
+
   // ---------- navigation / TTS ----------
   $("btn-dictee-open").onclick = () => {
     $("screen-home").classList.add("hidden");
     $("screen-dictee").classList.remove("hidden");
     updateKeyBanner();
+    setMode(state.mode);
   };
   $("btn-dictee-model").onclick = () => {
     const t = $("dictee-phrase").value;
     if (!t) return;
-    if (!/[\u4e00-\u9fff]/.test(t)) { showWarn("Le modèle vocal lit les caractères chinois. Écrivez la phrase en 汉字 pour l'écouter (ou enregistrez-vous et la correction marchera quand même en pinyin)."); return; }
+    if (!/[\u4e00-\u9fff]/.test(t)) { showWarn("La synthèse vocale lit les caractères chinois : écrivez la phrase visée en 汉字 pour l'écouter."); return; }
     hideWarn();
     const u = new SpeechSynthesisUtterance(t);
     u.lang = "zh-CN"; u.rate = 0.85;
@@ -57,7 +72,6 @@
     speechSynthesis.cancel(); speechSynthesis.speak(u);
   };
 
-  // exemples cliquables
   document.querySelectorAll(".chip").forEach(ch => {
     ch.onclick = () => { $("dictee-phrase").value = ch.dataset.ex; hideWarn(); };
   });
@@ -74,10 +88,13 @@
   $("btn-dictee-record").onclick = async () => {
     if (state.busy) return;
     if (state.recording) { state.mediaRecorder.stop(); return; }
-    const target = $("dictee-phrase").value;
-    if (!target.trim()) { showWarn("Écrivez d'abord la phrase à prononcer (en 汉字 ou en pinyin, l'un ou l'autre suffit) — ou cliquez sur un exemple."); return; }
     const key = localStorage.getItem(LS_KEY);
-    if (!key) { updateKeyBanner(); showWarn("Sans clé API, l'enregistrement ne peut pas être transcrit. Suivez les étapes 🔑 ci-dessus pour créer et coller votre clé Mistral."); return; }
+    if (!key) { updateKeyBanner(); showWarn("Sans clé API, votre enregistrement ne peut pas être analysé. Suivez les étapes 🔑 ci-dessus pour créer et coller votre clé Mistral."); return; }
+    let target = "";
+    if (state.mode === "target") {
+      target = $("dictee-phrase").value.trim();
+      if (!target) { showWarn("Mode « Viser une phrase » : écrivez d'abord la phrase (汉字 ou pinyin, l'un ou l'autre) — ou cliquez sur une suggestion — ou revenez au mode « Parler librement »."); return; }
+    }
     hideWarn();
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -88,7 +105,7 @@
         stream.getTracks().forEach(t => t.stop());
         state.recording = false;
         const b = $("btn-dictee-record");
-        b.classList.remove("on"); b.textContent = "⏺ 2. Enregistrer et parler";
+        b.classList.remove("on"); b.textContent = "🎤 Parler";
         if (state.playbackUrl) URL.revokeObjectURL(state.playbackUrl);
         state.audioBlob = new Blob(state.chunks, { type: "audio/webm" });
         state.playbackUrl = URL.createObjectURL(state.audioBlob);
@@ -98,8 +115,8 @@
       state.mediaRecorder.start();
       state.recording = true;
       const b = $("btn-dictee-record");
-      b.classList.add("on"); b.textContent = "⏹ Arrêter";
-      setStatus("● Enregistrement… lisez la phrase maintenant, puis re-cliquez pour arrêter.");
+      b.classList.add("on"); b.textContent = "⏹ Arrêter (parlez maintenant)";
+      setStatus("● Enregistrement… parlez en chinois, puis réappuyez pour arrêter.");
     } catch (e) {
       showWarn("Impossible d'accéder au micro : " + e.message + ". Utilisez Chrome ou Edge en HTTPS.");
     }
@@ -139,39 +156,36 @@
     return new Blob([ab], { type: "audio/wav" });
   }
 
-  // ---------- appel API ----------
-  async function transcribe(wavBlob, key) {
-    const call = withLang => {
-      const fd = new FormData();
-      fd.append("model", TRANSCRIBE_MODEL);
-      fd.append("file", wavBlob, "recording.wav");
-      if (withLang) fd.append("language", "zh");
-      return fetch("https://api.mistral.ai/v1/audio/transcriptions", {
-        method: "POST",
-        headers: { Authorization: "Bearer " + key },
-        body: fd,
-      });
-    };
-    let resp = await call(true);
-    if (!resp.ok) resp = await call(false); // si "language" est refusé, réessayer sans
-    if (!resp.ok) {
-      const t = await resp.text();
-      throw new Error("Transcription Voxtral (HTTP " + resp.status + ") : " + t.slice(0, 200));
+  function arrayBufferToBase64(buf) {
+    const bytes = new Uint8Array(buf);
+    let bin = "";
+    const CH = 0x8000;
+    for (let i = 0; i < bytes.length; i += CH) {
+      bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CH));
     }
-    const j = await resp.json();
-    return (j.text || "").trim();
+    return btoa(bin);
   }
 
-  const SYSTEM_PROMPT = "Tu es un coach expert de la prononciation du mandarin pour un apprenant francophone. On te donne : (1) une phrase cible, écrite en caractères chinois ou en pinyin ; (2) la transcription automatique (STT) de ce que l'apprenant a réellement prononcé. À partir des écarts entre la cible et la transcription, déduis ses erreurs de prononciation probables : consonnes confondues (s/sh, x/sh, j/zh, q/ch, z/zh, c/ch, n/l, r/l, f/h), tons inexacts, syllabes déformées ou manquantes. Réponds en français, en texte brut sans titres markdown, en 5 à 8 lignes courtes : d'abord ce qui est correct, puis chaque problème avec le mot ou la syllabe en pinyin (ton marqué) et un conseil articulatoire concret et bref, enfin la phrase cible en pinyin correctement toné comme modèle à imiter. Maximum 150 mots. Sois encourageant.";
+  // ---------- appel API : audio directement dans le chat ----------
+  const SYSTEM_PROMPT = "Tu es un coach expert de la prononciation du mandarin pour un apprenant francophone. On t'envoie l'enregistrement de sa voix. Réponds en français, en texte brut sans markdown, en deux parties. Première ligne, commence exactement par « Entendu : » puis la transcription fidèle, en caractères chinois, de ce qu'il a dit (avec le pinyin entre parenthèses). Ensuite l'analyse de sa prononciation, en 4 à 8 lignes courtes : ce qui est bien prononcé, puis les erreurs probables (consonnes confondues s/sh, x/sh, j/zh, q/ch, z/zh, c/ch, n/l, r/l, f/h, tons inexacts, syllabes déformées ou manquantes), chacune avec la syllabe en pinyin toné et un conseil articulatoire concret et bref. Termine par son niveau global en une phrase. Maximum 180 mots au total. Sois encourageant.";
 
-  async function chatCorrect(key, model, target, transcript) {
+  async function chatCorrect(key, model, audioB64, target) {
+    let instruction;
+    if (target) {
+      instruction = "J'ai essayé de dire cette phrase : " + target +
+        ". Écoute mon enregistrement : transcris ce que j'ai réellement dit, puis corrige ma prononciation.";
+    } else {
+      instruction = "J'ai parlé librement en mandarin. Écoute mon enregistrement : transcris ce que j'ai dit, puis corrige ma prononciation.";
+    }
     const body = {
       model,
       temperature: 0.3,
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: "Phrase cible : " + target + "\nTranscription de ce que j'ai dit : " + (transcript || "(rien détecté)") +
-          "\nAnalyse ma prononciation et corrige-la." },
+        { role: "user", content: [
+          { type: "input_audio", input_audio: audioB64 },
+          { type: "text", text: instruction },
+        ] },
       ],
     };
     const resp = await fetch("https://api.mistral.ai/v1/chat/completions", {
@@ -192,22 +206,24 @@
     const key = localStorage.getItem(LS_KEY);
     if (!key) {
       updateKeyBanner();
-      showWarn("Ajoutez votre clé API Mistral dans « ⚙️ Clé API Mistral » ci-dessus (les étapes 🔑 sont affichées), puis réessayez.");
+      showWarn("Ajoutez votre clé API Mistral dans « ⚙️ Clé API Mistral » (les étapes 🔑 sont affichées), puis réessayez.");
       return;
     }
-    const model = localStorage.getItem(LS_MODEL) || "mistral-small-latest";
+    const model = localStorage.getItem(LS_MODEL) || DEFAULT_MODEL;
     state.busy = true;
     const btn = $("btn-dictee-record");
     btn.disabled = true;
     $("dictee-results").classList.add("hidden");
     try {
-      setStatus("1/2 — Transcription de votre voix par Voxtral…");
+      setStatus("Envoi de votre voix au modèle " + model + "…");
       const wav = await blobToWav16k(state.audioBlob);
-      const transcript = await transcribe(wav, key);
-      setStatus("2/2 — Analyse et correction par " + model + "…");
-      const feedback = await chatCorrect(key, model, target, transcript);
-      $("dictee-transcript").textContent = transcript || "(aucune parole détectée)";
-      $("dictee-feedback").innerHTML = escapeHtml(feedback).replace(/\n/g, "<br>");
+      const b64 = arrayBufferToBase64(await wav.arrayBuffer());
+      const feedback = await chatCorrect(key, model, b64, target);
+      let transcript = "", analyse = feedback;
+      const m = feedback.match(/Entendu\s*[:：]\s*(.+)/i);
+      if (m) { transcript = m[1].trim(); analyse = feedback.slice(feedback.indexOf(m[0]) + m[0].length).trim(); }
+      $("dictee-transcript").textContent = transcript || "(voir l'analyse)";
+      $("dictee-feedback").innerHTML = escapeHtml(analyse || feedback).replace(/\n/g, "<br>");
       $("dictee-results").classList.remove("hidden");
       setStatus("");
     } catch (e) {
