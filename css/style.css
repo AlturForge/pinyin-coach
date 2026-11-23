@@ -68,3 +68,25 @@ canvas { width: 100%; max-width: 640px; display: block; margin: 14px auto; backg
 #score { font-size: 1.2rem; font-weight: 700; margin-top: 10px; }
 .warn { background: #fdf3e2; border: 1px solid #ecd9ad; border-radius: 8px; padding: 10px 14px; font-size: .9rem; }
 footer { text-align: center; padding: 20px; color: #9a917f; border-top: 1px solid var(--line); }
+
+/* ---------- Dictée & correction IA ---------- */
+.mode-cards { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.mode-card-dictee h2 { color: var(--accent); }
+.dictee-open { margin-top: 4px; }
+
+.dictee-target { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 20px; margin: 14px 0; }
+.dictee-target label { display: block; font-size: .92rem; color: #5a5347; margin-bottom: 8px; }
+.dictee-target input { width: 100%; padding: 12px 14px; font-size: 1.15rem; border: 1px solid var(--line); border-radius: 10px; background: #fdfbf7; }
+.dictee-target input:focus { outline: 2px solid var(--accent); border-color: var(--accent); }
+
+.d-transcript-wrap { background: #fdfbf7; border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; }
+.d-transcript-label { font-size: .82rem; color: #8a8172; margin-bottom: 6px; }
+.d-transcript { font-size: 1.3rem; line-height: 1.4; }
+.d-feedback { font-size: .98rem; line-height: 1.55; }
+
+.d-settings { margin-top: 22px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 20px 16px; }
+.d-settings summary { cursor: pointer; font-size: .95rem; padding: 6px 0; }
+.d-settings p { font-size: .88rem; color: #6b6357; }
+.d-settings label { display: block; font-size: .88rem; margin: 10px 0; }
+.d-settings input { width: 100%; max-width: 420px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 8px; font-size: .95rem; }
+.d-settings-msg { color: var(--ok); font-size: .88rem; margin-left: 10px; }

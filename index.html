@@ -14,8 +14,9 @@
 
 <!-- ================= ACCUEIL ================= -->
 <main id="screen-home" class="screen">
-  <p class="intro">Choisissez votre entraînement. Le micro enregistre votre voix, l'analyse se fait
-  <strong>entièrement dans votre navigateur</strong> : aucun audio n'est envoyé sur un serveur.</p>
+  <p class="intro">Choisissez votre entraînement. Le micro enregistre votre voix, l'analyse des exercices se fait
+  <strong>entièrement dans votre navigateur</strong> : aucun audio n'est envoyé sur un serveur.<br>
+  <small>Exception : le mode <b>Dictée &amp; correction IA</b> envoie votre enregistrement à l'API Mistral (avec votre propre clé) pour une transcription et une correction.</small></p>
 
   <section class="mode-cards">
     <article class="mode-card" data-mode="consonants">
@@ -28,13 +29,18 @@
       <p>Les quatre tons : haut, montant, descendant-remontant, tombant.</p>
       <ul class="set-list" id="list-tones"></ul>
     </article>
+    <article class="mode-card mode-card-dictee">
+      <h2>🤖 Dictée &amp; correction IA</h2>
+      <p>Tapez ou collez une phrase cible (en <b>caractères chinois ou en pinyin</b>), dictez-la au micro : Voxtral transcrit ce que l'IA entend, puis Mistral vous explique en français comment corriger votre prononciation.</p>
+      <button class="btn dictee-open" id="btn-dictee-open">Ouvrir la dictée IA →</button>
+    </article>
   </section>
 
   <section class="custom">
     <h2>✎ Mes propres textes</h2>
     <p>Une phrase par ligne au format : <code>汉字 ; pīnyīn</code><br>
     <small>Exemple : <code>我想学习 ; wǒ xiǎng xuéxí</code></small></p>
-    <textarea id="custom-input" rows="5" placeholder="先生想学习 ; xiānsheng xiǎng xuCɸí&#10;她去学校 ; tā qù xuéxiào"></textarea>
+    <textarea id="custom-input" rows="5" placeholder="先生想学习 ; xiānsheng xiǎng xiu&#10;她去学校 ; tā qù xuéxiào"></textarea>
     <button id="btn-custom-save" class="primary">Enregistrer mes phrases</button>
     <ul class="set-list" id="list-custom"></ul>
   </section>
@@ -72,13 +78,57 @@
   <p id="browser-warn" class="warn hidden"></p>
 </main>
 
+<!-- ================= DICTÉE IA ================= -->
+<main id="screen-dictee" class="screen hidden">
+  <div class="exercise-head">
+    <span class="badge">🤖 Dictée &amp; correction IA</span>
+    <span class="tip">Dites la phrase : l'IA transcrit, puis corrige votre prononciation.</span>
+  </div>
+
+  <section class="dictee-target">
+    <label for="dictee-phrase"><b>Phrase cible</b> — caractères chinois ou pinyin</label>
+    <input id="dictee-phrase" type="text" autocomplete="off"
+           placeholder="ex. 我想学习 ou wǒ xiǎng xuéxí">
+  </section>
+
+  <div class="controls">
+    <button id="btn-dictee-model" class="btn">🔊 Écouter le modèle</button>
+    <button id="btn-dictee-record" class="btn record">⏺ Enregistrer</button>
+    <button id="btn-dictee-playback" class="btn" disabled>▶ Réécouter</button>
+  </div>
+
+  <div id="dictee-status" class="rec-status hidden"></div>
+
+  <section id="dictee-results" class="results hidden">
+    <h3>Correction</h3>
+    <div class="d-transcript-wrap">
+      <div class="d-transcript-label">Ce que l'IA a entendu (transcription Voxtral) :</div>
+      <div id="dictee-transcript" class="d-transcript"></div>
+    </div>
+    <div id="dictee-feedback" class="d-feedback"></div>
+  </section>
+
+  <details class="d-settings">
+    <summary>⚙️ Réglages — clé API Mistral</summary>
+    <p>La correction IA nécessite une clé API Mistral (console.mistral.ai).<br>
+    <small>La clé reste uniquement dans ce navigateur (localStorage) ; les appels vont directement de votre navigateur à api.mistral.ai. L'enregistrement est envoyé à l'API pour la transcription, puis supprimé de leur côté.</small></p>
+    <label>Clé API <input id="dictee-apikey" type="password" autocomplete="off" placeholder="…"></label>
+    <label>Modèle de chat <input id="dictee-modelname" type="text" value="mistral-small-latest"></label>
+    <div><button id="dictee-save-settings" class="btn">Enregistrer</button>
+    <span id="dictee-settings-msg" class="d-settings-msg"></span></div>
+  </details>
+
+  <p id="dictee-warn" class="warn hidden"></p>
+</main>
+
 <footer>
-  <small>Analyse 100 % locale (Web Audio). Meilleur rendu dans Chrome / Edge.
+  <small>Analyse locale (Web Audio) + correction IA optionnelle (API Mistral, votre clé). Meilleur rendu dans Chrome / Edge.
   <a href="https://github.com/AlturForge/pinyin-coach">Code source</a></small>
 </footer>
 
 <script src="js/corpus.js"></script>
 <script src="js/analysis.js"></script>
 <script src="js/app.js"></script>
+<script src="js/dictee.js"></script>
 </body>
 </html>

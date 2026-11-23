@@ -117,6 +117,8 @@
   }
   $("btn-home").onclick = () => {
     $("screen-exercise").classList.add("hidden");
+    const dictee = $("screen-dictee");
+    if (dictee) dictee.classList.add("hidden");
     $("screen-home").classList.remove("hidden");
   };
   $("btn-next").onclick = () => {
@@ -181,7 +183,7 @@
       $("rec-status").classList.remove("hidden");
     startRecognition();
     } catch (e) {
-      alert("Impossible d'accèder au micro : " + e.message);
+      alert("Impossible d'accéder au micro : " + e.message);
     }
   };
     $("btn-playback").onclick = () => {
@@ -200,7 +202,7 @@
     if (state.heard) {
       $("heard").innerHTML = `Le moteur de reconnaissance a entendu : <b>${state.heard}</b>` +
         (state.heard.replace(/\s/g, "").includes(ex.hanzi.replace(/[，。！？,.!?]/g, "")) ? " ✅ identique à la cible." :
-        " — comparez avec la phrase cible pour repérer les syllables confondues.");
+        " — comparez avec la phrase cible pour repérer les syllabes confondues.");
     } else {
       $("heard").textContent = "";
     }
@@ -266,7 +268,7 @@
     if (probs.length) {
       const w = $("browser-warn");
       w.classList.remove("hidden");
-      w.textContent = "  Non disponible dans ce navigateur : " + probs.join(", ") + ". Utilisez Chrome ou Edge pour l'expérience complète.";
+      w.textContent = "  Non disponible dans ce navigateur : " + probs.join(", ") + ". Utilisez Chrome ou Edge pour l'expérience complète.";
     }
     if (window.speechSynthesis) speechSynthesis.getVoices();
   }
