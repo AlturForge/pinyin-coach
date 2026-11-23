@@ -23,7 +23,7 @@
       <h2>🤖 Dictée &amp; correction IA</h2>
       <p>Dites une phrase en chinois au micro : <b>Voxtral transcrit ce que l'IA entend</b>, puis Mistral vous explique en français comment corriger votre prononciation (consonnes, tons, conseils articulatoires).</p>
       <button class="btn dictee-open" id="btn-dictee-open">🎤 Dicter une phrase et me faire corriger →</button>
-      <p class="dictee-hint"><small>Phrase cible en <b>汉字 ou en pinyin</b>, collée ou tapée. Nécessite une clé API Mistral (⚙️ réglages sur l'écran suivant).</small></p>
+      <p class="dictee-hint"><small>Vous écrivez la phrase à prononcer comme vous voulez : <b>en 汉字 ou en pinyin</b> (aucun choix préalable, les deux fonctionnent). Nécessite une clé API Mistral : le mode vous guide pas à pas.</small></p>
     </article>
     <article class="mode-card" data-mode="consonants">
       <h2>声母 Consonnes</h2>
@@ -83,25 +83,42 @@
 <main id="screen-dictee" class="screen hidden">
   <div class="exercise-head">
     <span class="badge">🤖 Dictée &amp; correction IA</span>
-    <span class="tip">Dites la phrase : l'IA transcrit, puis corrige votre prononciation.</span>
+  </div>
+
+  <div id="dictee-key-banner" class="warn key-banner hidden">
+    <b>🔑 Il manque la clé API Mistral (à faire une seule fois) :</b>
+    <ol class="key-steps">
+      <li>Ouvrez <a href="https://console.mistral.ai/" target="_blank" rel="noopener">console.mistral.ai</a> → rubrique <b>API Keys</b> → bouton <b>New key</b>.</li>
+      <li>Donnez-lui un nom (ex. « pinyin-coach ») et validez.</li>
+      <li><b>Copiez la clé tout de suite</b> : elle n'est affichée qu'une seule fois.</li>
+      <li>Collez-la dans « Clé API » ci-dessous (les réglages sont déjà ouverts) et cliquez <b>Enregistrer</b>.</li>
+    </ol>
+    <small>Selon votre compte, la console peut demander l'ajout d'un moyen de paiement pour activer l'accès API. La clé reste ensuite stockée uniquement dans ce navigateur.</small>
   </div>
 
   <section class="dictee-target">
-    <label for="dictee-phrase"><b>Phrase cible</b> — caractères chinois ou pinyin</label>
+    <label for="dictee-phrase"><b>1. Écrivez la phrase à prononcer</b> — comme vous voulez : 汉字 <i>ou</i> pinyin, à votre convenance.</label>
     <input id="dictee-phrase" type="text" autocomplete="off"
-           placeholder="ex. 我想学习 ou wǒ xiǎng xuéxí">
+           placeholder="ex. 我想学习 — ou bien wǒ xiǎng xuéxí (l'un ou l'autre)">
+    <div class="dictee-examples">
+      <small>Exemples à essayer :</small>
+      <button class="chip" data-ex="四是四，十是十，十四是十四，四十是四十">四是四，十是十…</button>
+      <button class="chip" data-ex="wǒ xiǎng xuéxí">wǒ xiǎng xuéxí</button>
+      <button class="chip" data-ex="你好，我想练习发音">你好，我想练习发音</button>
+    </div>
   </section>
 
   <div class="controls">
     <button id="btn-dictee-model" class="btn">🔊 Écouter le modèle</button>
-    <button id="btn-dictee-record" class="btn record">⏺ Enregistrer</button>
+    <button id="btn-dictee-record" class="btn record">⏺ 2. Enregistrer et parler</button>
     <button id="btn-dictee-playback" class="btn" disabled>▶ Réécouter</button>
   </div>
+  <p class="step-hint"><small>Après l'arrêt de l'enregistrement, la transcription puis la correction s'affichent automatiquement.</small></p>
 
   <div id="dictee-status" class="rec-status hidden"></div>
 
   <section id="dictee-results" class="results hidden">
-    <h3>Correction</h3>
+    <h3>3. Correction</h3>
     <div class="d-transcript-wrap">
       <div class="d-transcript-label">Ce que l'IA a entendu (transcription Voxtral) :</div>
       <div id="dictee-transcript" class="d-transcript"></div>
@@ -109,11 +126,10 @@
     <div id="dictee-feedback" class="d-feedback"></div>
   </section>
 
-  <details class="d-settings">
-    <summary>⚙️ Réglages — clé API Mistral</summary>
-    <p>La correction IA nécessite une clé API Mistral (console.mistral.ai).<br>
-    <small>La clé reste uniquement dans ce navigateur (localStorage) ; les appels vont directement de votre navigateur à api.mistral.ai. L'enregistrement est envoyé à l'API pour la transcription, puis supprimé de leur côté.</small></p>
-    <label>Clé API <input id="dictee-apikey" type="password" autocomplete="off" placeholder="…"></label>
+  <details class="d-settings" id="dictee-settings" open>
+    <summary>⚙️ Clé API Mistral (obligatoire pour la correction)</summary>
+    <p>La clé reste uniquement dans ce navigateur (localStorage) ; les appels vont directement de votre navigateur à api.mistral.ai. L'enregistrement est envoyé à l'API pour la transcription.</p>
+    <label>Clé API <input id="dictee-apikey" type="password" autocomplete="off" placeholder="Collez ici la clé de console.mistral.ai"></label>
     <label>Modèle de chat <input id="dictee-modelname" type="text" value="mistral-small-latest"></label>
     <div><button id="dictee-save-settings" class="btn">Enregistrer</button>
     <span id="dictee-settings-msg" class="d-settings-msg"></span></div>

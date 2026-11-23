@@ -76,10 +76,20 @@ footer { text-align: center; padding: 20px; color: #9a917f; border-top: 1px soli
 .dictee-open:hover { background: #a93226; }
 .dictee-hint { margin-top: 10px; }
 
+.key-banner { border-color: #e6b800; background: #fffbec; }
+.key-banner a { color: var(--accent); font-weight: 600; }
+.key-steps { margin: 10px 0 6px 0; padding-left: 22px; }
+.key-steps li { margin: 4px 0; }
+
 .dictee-target { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 20px; margin: 14px 0; }
-.dictee-target label { display: block; font-size: .92rem; color: #5a5347; margin-bottom: 8px; }
+.dictee-target label { display: block; font-size: .95rem; color: #3f3a32; margin-bottom: 8px; }
 .dictee-target input { width: 100%; padding: 12px 14px; font-size: 1.15rem; border: 1px solid var(--line); border-radius: 10px; background: #fdfbf7; }
 .dictee-target input:focus { outline: 2px solid var(--accent); border-color: var(--accent); }
+.dictee-examples { margin-top: 10px; }
+.dictee-examples small { color: #8a8172; display: block; margin-bottom: 6px; }
+.chip { display: inline-block; margin: 3px 6px 3px 0; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: #fdfbf7; cursor: pointer; font-size: .9rem; }
+.chip:hover { border-color: var(--accent); background: #fff5f3; }
+.step-hint { text-align: center; color: #8a8172; margin: 10px 0 0; }
 
 .d-transcript-wrap { background: #fdfbf7; border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; }
 .d-transcript-label { font-size: .82rem; color: #8a8172; margin-bottom: 6px; }

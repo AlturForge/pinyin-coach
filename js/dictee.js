@@ -29,17 +29,26 @@
     localStorage.setItem(LS_MODEL, model);
     $("dictee-settings-msg").textContent = "✓ Enregistré" + (key ? "" : " (sans clé)");
     setTimeout(() => $("dictee-settings-msg").textContent = "", 2500);
+    if (key) { $("dictee-key-banner").classList.add("hidden"); $("dictee-settings").open = false; }
+    else updateKeyBanner();
   };
+
+  function updateKeyBanner() {
+    const hasKey = !!localStorage.getItem(LS_KEY);
+    $("dictee-key-banner").classList.toggle("hidden", hasKey);
+    $("dictee-settings").open = !hasKey;
+  }
 
   // ---------- navigation / TTS ----------
   $("btn-dictee-open").onclick = () => {
     $("screen-home").classList.add("hidden");
     $("screen-dictee").classList.remove("hidden");
+    updateKeyBanner();
   };
   $("btn-dictee-model").onclick = () => {
     const t = $("dictee-phrase").value;
     if (!t) return;
-    if (!/[\u4e00-\u9fff]/.test(t)) { showWarn("Le modèle vocal lit les caractères chinois. Entrez la phrase en 汉字 pour l'écouter."); return; }
+    if (!/[\u4e00-\u9fff]/.test(t)) { showWarn("Le modèle vocal lit les caractères chinois. Écrivez la phrase en 汉字 pour l'écouter (ou enregistrez-vous et la correction marchera quand même en pinyin)."); return; }
     hideWarn();
     const u = new SpeechSynthesisUtterance(t);
     u.lang = "zh-CN"; u.rate = 0.85;
@@ -47,6 +56,11 @@
     if (v) u.voice = v;
     speechSynthesis.cancel(); speechSynthesis.speak(u);
   };
+
+  // exemples cliquables
+  document.querySelectorAll(".chip").forEach(ch => {
+    ch.onclick = () => { $("dictee-phrase").value = ch.dataset.ex; hideWarn(); };
+  });
 
   function showWarn(msg) { const w = $("dictee-warn"); w.textContent = msg; w.classList.remove("hidden"); }
   function hideWarn() { $("dictee-warn").classList.add("hidden"); }
@@ -61,7 +75,9 @@
     if (state.busy) return;
     if (state.recording) { state.mediaRecorder.stop(); return; }
     const target = $("dictee-phrase").value;
-    if (!target.trim()) { showWarn("Entrez d'abord une phrase cible (汉字 ou pinyin)."); return; }
+    if (!target.trim()) { showWarn("Écrivez d'abord la phrase à prononcer (en 汉字 ou en pinyin, l'un ou l'autre suffit) — ou cliquez sur un exemple."); return; }
+    const key = localStorage.getItem(LS_KEY);
+    if (!key) { updateKeyBanner(); showWarn("Sans clé API, l'enregistrement ne peut pas être transcrit. Suivez les étapes 🔑 ci-dessus pour créer et coller votre clé Mistral."); return; }
     hideWarn();
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -72,7 +88,7 @@
         stream.getTracks().forEach(t => t.stop());
         state.recording = false;
         const b = $("btn-dictee-record");
-        b.classList.remove("on"); b.textContent = "⏺ Enregistrer";
+        b.classList.remove("on"); b.textContent = "⏺ 2. Enregistrer et parler";
         if (state.playbackUrl) URL.revokeObjectURL(state.playbackUrl);
         state.audioBlob = new Blob(state.chunks, { type: "audio/webm" });
         state.playbackUrl = URL.createObjectURL(state.audioBlob);
@@ -175,7 +191,8 @@
   async function runCorrection(target) {
     const key = localStorage.getItem(LS_KEY);
     if (!key) {
-      showWarn("Ajoutez votre clé API Mistral dans « ⚙️ Réglages » ci-dessous (console.mistral.ai), puis réessayez.");
+      updateKeyBanner();
+      showWarn("Ajoutez votre clé API Mistral dans « ⚙️ Clé API Mistral » ci-dessus (les étapes 🔑 sont affichées), puis réessayez.");
       return;
     }
     const model = localStorage.getItem(LS_MODEL) || "mistral-small-latest";
